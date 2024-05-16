@@ -149,16 +149,26 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Tour',   # Replace with your database name
+        'USER': 'root',           # Replace with your MySQL username
+        'PASSWORD': 'root',      # Replace with your MySQL password
+        'HOST': 'mysql.server',       # Replace with your MySQL host
+        'PORT': '8000',               # Replace with your MySQL port
+    }
+
     # "default": {
     #     "ENGINE": "django.db.backends.mysql",
     #     "NAME": 'TourManagement',
     #     "USER": 'root',
     #     "PASSWORD": 'root',
     # }
-    'default': dj_database_url.config(
-        default='mysql://root:root@localhost/tour',
-        conn_max_age=600,  # Set the maximum age for database connections
-    )
+
+    # 'default': dj_database_url.config(
+    #     default='mysql://root:root@localhost/tour',
+    #     conn_max_age=600,  # Set the maximum age for database connections
+    # )
 }
 
 
