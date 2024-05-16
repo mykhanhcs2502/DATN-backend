@@ -149,21 +149,21 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mykhanhcs2502$tour',   # Replace with your database name
-        'USER': 'mykhanhcs2502',           # Replace with your MySQL username
-        'PASSWORD': 'pythonanywhere',      # Replace with your MySQL password
-        'HOST': 'mykhanhcs2502.mysql.pythonanywhere-services.com',       # Replace with your MySQL host
-        'PORT': '8000',               # Replace with your MySQL port
-    }
-
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "NAME": 'TourManagement',
-    #     "USER": 'root',
-    #     "PASSWORD": 'root',
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'mykhanhcs2502$tour',   # Replace with your database name
+    #     'USER': 'mykhanhcs2502',           # Replace with your MySQL username
+    #     'PASSWORD': 'pythonanywhere',      # Replace with your MySQL password
+    #     'HOST': 'mykhanhcs2502.mysql.pythonanywhere-services.com',       # Replace with your MySQL host
+    #     # 'PORT': '8000',               # Replace with your MySQL port
     # }
+
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": 'Tour',
+        "USER": 'root',
+        "PASSWORD": 'root',
+    }
 
     # 'default': dj_database_url.config(
     #     default='mysql://root:root@localhost/tour',
