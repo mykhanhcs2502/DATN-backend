@@ -154,7 +154,7 @@ DATABASES = {
         'NAME': 'mykhanhcs2502$tour',   # Replace with your database name
         'USER': '',           # Replace with your MySQL username
         'PASSWORD': '',      # Replace with your MySQL password
-        'HOST': 'mysql.server',       # Replace with your MySQL host
+        'HOST': 'mykhanhcs2502.mysql.pythonanywhere-services.com',       # Replace with your MySQL host
         'PORT': '8000',               # Replace with your MySQL port
     }
 
