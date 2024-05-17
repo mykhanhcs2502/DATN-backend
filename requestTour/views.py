@@ -249,6 +249,9 @@ class RequestCreateAddAPI(generics.CreateAPIView):
             add_req_serializer = AddRequestSerializer(data=new_add_request)
             if add_req_serializer.is_valid():
                 add_req_serializer.save()
+                result = add_req_serializer.data
+                result['schedule'] = json.loads(result['schedule'])
+                result['service'] = json.loads(result['service'])
                 return Response({'err': 0, 'msg': add_req_serializer.data}, status=status.HTTP_200_OK)
             else: 
                 return Response({'err': 1, 'msg': add_req_serializer.errors}, status=status.HTTP_200_OK)
