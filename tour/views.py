@@ -78,6 +78,7 @@ class PlaceAllAPIView(generics.ListAPIView):
         return Response(placelst.data, status=status.HTTP_200_OK)
     
 class PlaceGetAllConditionAPIView(generics.ListAPIView):
+    queryset = Place.objects.all()
     serializer_class = PlaceAndImageSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -230,7 +231,7 @@ class ToursGetAllConditionAPIView(generics.ListAPIView):
     #         return super().get_permissions()
 
 class TourGetByNameAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -315,7 +316,7 @@ class TourAddAllAPIView(generics.CreateAPIView):
             return Response({'message': f'Error creating places: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class TourSearchDeadlinesAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -328,7 +329,7 @@ class TourSearchDeadlinesAPIView(generics.ListAPIView):
         return Response(result, status=status.HTTP_200_OK)
     
 class TourHighestRatingAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourFeedbackSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -357,7 +358,7 @@ class TourHighestRatingAPIView(generics.ListAPIView):
         return Response(result, status=status.HTTP_200_OK)
 
 class TourSearchByPlaceAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = TourViewSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -366,7 +367,7 @@ class TourSearchByPlaceAPIView(generics.ListAPIView):
         pass
 
 class TourSearchByStaffIDAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -380,7 +381,7 @@ class TourSearchByStaffIDAPIView(generics.ListAPIView):
         return Response(tour_lst.data, status=status.HTTP_200_OK)
 
 class TourSearchByStaffAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -398,6 +399,7 @@ class TourSearchByStaffAPIView(generics.ListAPIView):
         return Response(tour_lst.data, status=status.HTTP_200_OK)
 
 class TourDetailAPIView(views.APIView):
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -417,7 +419,7 @@ class TourDetailAPIView(views.APIView):
             return Response("Không có tour", status=status.HTTP_200_OK)
     
 class TourCreateAPIView(generics.CreateAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = TourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -536,6 +538,7 @@ class TourUpdateAPIView(generics.UpdateAPIView):
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
 
 class TourCancelAPIView(generics.UpdateAPIView):
+    queryset = Tour.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
@@ -558,6 +561,7 @@ class TourCancelAPIView(generics.UpdateAPIView):
 
 
 class ReportTourCountAPIView(views.APIView):
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []

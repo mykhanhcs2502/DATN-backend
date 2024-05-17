@@ -27,6 +27,7 @@ class StaffTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 class StaffLoginAPIView(TokenObtainPairView):
+    queryset = Staff.objects.all()
     serializer_class = StaffLoginSerializer
     # permission_classes = [permissions.AllowAny]
     # authentication_classes = []
@@ -115,6 +116,7 @@ class StaffAddAllAPIView(generics.CreateAPIView):
         return Response({'message': 'Staffs created successfully'}, status=status.HTTP_201_CREATED)
     
 class StaffFirstLoginAPIView(generics.CreateAPIView):
+    queryset = Staff.objects.all()
     serializer_class = StaffTokenSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []

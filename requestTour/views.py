@@ -31,6 +31,7 @@ class RequestDeleteAllAPIView(generics.DestroyAPIView):
         return Response({'message': f'{deleted_count} Places deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 class RequestAddAllAPI(generics.CreateAPIView):
+    queryset = Request.objects.all()
     serializer_class = RequestSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -92,6 +93,7 @@ class RequestAddAllAPI(generics.CreateAPIView):
         return Response({'message': 'Order created successfully'}, status=status.HTTP_201_CREATED)
     
 class RequestAllAPIView(generics.ListAPIView):
+    queryset = Request.objects.all()
     serializer_class = RequestSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -109,6 +111,7 @@ class RequestAllAPIView(generics.ListAPIView):
         return Response(request.data, status=status.HTTP_200_OK)
 
 class RequestGetByStaffAPIView(generics.ListAPIView):
+    queryset = Request.objects.all()
     serializer_class = RequestSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -123,6 +126,7 @@ class RequestGetByStaffAPIView(generics.ListAPIView):
         return Response(request.data, status=status.HTTP_200_OK)
     
 class RequestGetByStaffIDAPIView(generics.ListAPIView):
+    queryset = Request.objects.all()
     serializer_class = RequestSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -134,6 +138,7 @@ class RequestGetByStaffIDAPIView(generics.ListAPIView):
         return Response(request.data, status=status.HTTP_200_OK)
     
 class RequestGetByIDAPIView(generics.ListAPIView):
+    queryset = Request.objects.all()
     serializer_class = RequestSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -178,6 +183,7 @@ class RequestGetByIDAPIView(generics.ListAPIView):
             return Response(result, status=status.HTTP_200_OK)
         
 class RequestCreateAddAPI(generics.CreateAPIView):
+    queryset = Request.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     
@@ -253,6 +259,7 @@ class RequestCreateAddAPI(generics.CreateAPIView):
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
         
 class RequestCreateEditAPI(generics.CreateAPIView):
+    queryset = Request.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     
@@ -338,6 +345,7 @@ class RequestCreateEditAPI(generics.CreateAPIView):
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
         
 class RequestCreateCancelAPI(generics.CreateAPIView):
+    queryset = Request.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     
@@ -392,6 +400,7 @@ class RequestCreateCancelAPI(generics.CreateAPIView):
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
         
 class RequestAcceptAPIView(generics.CreateAPIView):
+    queryset = Request.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 

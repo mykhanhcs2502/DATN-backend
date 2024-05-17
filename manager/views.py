@@ -77,6 +77,7 @@ class ManagerTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 class ManagerLoginAPIView(TokenObtainPairView):
+    queryset = Manager.objects.all()
     serializer_class = ManagerLoginSerializer
     # permission_classes = [permissions.AllowAny]
     # authentication_classes = []
@@ -115,6 +116,7 @@ class ManagerLoginAPIView(TokenObtainPairView):
         }
     
 class StaffAddAPIView(generics.CreateAPIView):
+    queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -168,6 +170,7 @@ class StaffAddAPIView(generics.CreateAPIView):
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
         
 class StaffAllAPIView(generics.ListAPIView):
+    queryset = Staff.objects.all()
     serializer_class = StaffAllSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -191,6 +194,7 @@ class StaffAllAPIView(generics.ListAPIView):
         return Response(staff.data, status=status.HTTP_200_OK)
     
 class StaffGetByIDAPIView(generics.ListAPIView):
+    queryset = Staff.objects.all()
     serializer_class = StaffTokenSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -203,6 +207,7 @@ class StaffGetByIDAPIView(generics.ListAPIView):
         return Response(staff, status=status.HTTP_200_OK)
     
 class StaffUpdateInfoAPIView(generics.UpdateAPIView):
+    queryset = Staff.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
@@ -269,6 +274,7 @@ class StaffUpdateInfoAPIView(generics.UpdateAPIView):
             return Response({'err': 1, 'msg': 'Staff member not found'}, status=status.HTTP_404_NOT_FOUND)
         
 class StaffChangeActivateAPIView(generics.UpdateAPIView):
+    queryset = Staff.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 

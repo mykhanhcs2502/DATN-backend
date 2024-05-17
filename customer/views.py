@@ -39,6 +39,7 @@ class CustomerTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomerLoginAPIView(TokenObtainPairView):
     serializer_class = CustomerLoginSerializer
+    queryset = Customer.objects.all()
     # permission_classes = [permissions.AllowAny]
     # authentication_classes = []
 
@@ -88,7 +89,7 @@ class CustomerDeleteAllAPIView(generics.DestroyAPIView):
         return Response({'message': f'{deleted_count} customers deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 class CustomerAddAllAPIView(generics.CreateAPIView):
-    # queryset = Customer.objects.all()
+    queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -120,7 +121,7 @@ class CustomerAddAllAPIView(generics.CreateAPIView):
         return Response({'message': 'Customers created successfully'}, status=status.HTTP_201_CREATED)
     
 class CustomerCreate(generics.CreateAPIView):
-    # queryset = Customer.objects.all()
+    queryset = Customer.objects.all()
     serializer_class = CustomerRegisterSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -175,6 +176,7 @@ class CustomerCreate(generics.CreateAPIView):
                 return Response({'error': error, 'msg': 'Số điện thoại đã được sử dụng !', 'token': None}, status=status.HTTP_200_OK)
 
 class ForgetPassword(views.APIView):
+    queryset = Customer.objects.all()
     serializer_class = CustomerLoginSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -197,6 +199,7 @@ class ForgetPassword(views.APIView):
             return Response({'err': 1, 'msg': 'Không tìm thấy người dùng !'})
         
 class ChangePassword(views.APIView):
+    queryset = Profile.objects.all()
     serializer_class = CustomerLoginSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -227,6 +230,7 @@ class ChangePassword(views.APIView):
 
 class GetCurrentAPI(views.APIView):
     # serializer_class = CustomerTokenSerializer
+    queryset = Customer.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
@@ -241,6 +245,7 @@ class GetCurrentAPI(views.APIView):
 
 class AuthRefreshTokenAPI(views.APIView):
     # serializer_class = CustomerTokenSerializer
+    queryset = Customer.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 

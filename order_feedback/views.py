@@ -196,6 +196,7 @@ class OrderTourTypeAPIView(generics.ListAPIView):
             return Response({'err': 1, 'count': 0}, status=status.HTTP_200_OK)
         
 class OrderOfCustomerAPIView(generics.ListAPIView):
+    queryset = Order.objects.all()
     serializer_class = OrderOfCustomerSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -228,6 +229,7 @@ class OrderOfCustomerAPIView(generics.ListAPIView):
             return Response({'err': 1, 'count': 0}, status=status.HTTP_200_OK)
         
 class OrderUpdateAPIView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
     serializer_class = OrderUpdateSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -259,6 +261,7 @@ class OrderUpdateAPIView(generics.UpdateAPIView):
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
 
 class OrderCancelAPIView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
     serializer_class = OrderCancelSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -357,6 +360,7 @@ class FeedbackAddAllAPIView(generics.CreateAPIView):
         return Response({'message': 'Feedback created successfully'}, status=status.HTTP_201_CREATED)
     
 class FeedbackTourAPIView(views.APIView):
+    queryset = Feedback.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
@@ -369,6 +373,7 @@ class FeedbackTourAPIView(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class FeedbackAddAPIView(generics.CreateAPIView):
+    queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -413,6 +418,7 @@ class FeedbackAddAPIView(generics.CreateAPIView):
         return Response({'err': 0, 'msg': serializer.errors}, status=status.HTTP_200_OK)
 
 class ReportCustomerCountAPIView(views.APIView):
+    queryset = Order.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
@@ -442,6 +448,7 @@ class ReportCustomerCountAPIView(views.APIView):
         return Response(result, status=status.HTTP_200_OK)
     
 class ReportIncomeAPIView(views.APIView):
+    queryset = Order.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
