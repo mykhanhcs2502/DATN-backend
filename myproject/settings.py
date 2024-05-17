@@ -34,7 +34,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG")
-
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -148,26 +147,26 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'mykhanhcs2502$tour',   # Replace with your database name
-    #     'USER': 'mykhanhcs2502',           # Replace with your MySQL username
-    #     'PASSWORD': 'pythonanywhere',      # Replace with your MySQL password
-    #     'HOST': 'mykhanhcs2502.mysql.pythonanywhere-services.com',       # Replace with your MySQL host
-    #     # 'PORT': '8000',               # Replace with your MySQL port
+    # "default": {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "NAME": 'TourManagement',
+    #     "USER": 'root',
+    #     "PASSWORD": 'root',
     # }
 
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": 'Tour',
-        "USER": 'root',
-        "PASSWORD": 'root',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'TourManagement',  # Name of your database
+    #     'USER': 'admin',            # MySQL username
+    #     'PASSWORD': '12345678',        # MySQL password
+    #     'HOST': 'tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com',  # RDS host name
+    #     'PORT': '3306',            # Default MySQL port
+    # }
 
-    # 'default': dj_database_url.config(
-    #     default='mysql://root:root@localhost/tour',
-    #     conn_max_age=600,  # Set the maximum age for database connections
-    # )
+    'default': dj_database_url.config(
+        default='mysql://admin:12345678@tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com/tourmanagement',
+        conn_max_age=600,  # Set the maximum age for database connections
+    )
 }
 
 
