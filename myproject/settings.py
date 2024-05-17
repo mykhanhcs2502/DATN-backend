@@ -154,19 +154,19 @@ DATABASES = {
     #     "PASSWORD": 'root',
     # }
 
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'TourManagement',  # Name of your database
-    #     'USER': 'admin',            # MySQL username
-    #     'PASSWORD': '12345678',        # MySQL password
-    #     'HOST': 'tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com',  # RDS host name
-    #     'PORT': '3306',            # Default MySQL port
-    # }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'TourManagement',  # Name of your database
+        'USER': 'admin',            # MySQL username
+        'PASSWORD': '12345678',        # MySQL password
+        'HOST': 'tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com',  # RDS host name
+        'PORT': '3306',            # Default MySQL port
+    }
 
-    'default': dj_database_url.config(
-        default='mysql://admin:12345678@tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com/tourmanagement',
-        conn_max_age=600,  # Set the maximum age for database connections
-    )
+    # 'default': dj_database_url.config(
+    #     default='mysql://admin:12345678@tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com/tourmanagement',
+    #     conn_max_age=600,  # Set the maximum age for database connections
+    # )
 }
 
 

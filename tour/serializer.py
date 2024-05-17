@@ -68,6 +68,35 @@ class PlaceTourSerializer(serializers.ModelSerializer):
             num+=order.ticket_num
         return num
 
+class TourViewByCondSerializer(serializers.ModelSerializer):
+    places = PlaceAndImageSerializer(many=True, read_only=True)
+    staff = StaffTokenSerializer(many=False, read_only=True)
+    rating = serializers.SerializerMethodField()
+    cus_num = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tour
+        fields = ('tour_ID', 'name', 'departure', 'vehicle', 'seat_num', 'price', 'isActive', 'starting_date', 'bookingDeadline', 'day_num', 'night_num', 'note', 'places', 'staff', 'rating', 'cus_num')
+    
+    def get_rating(self, instance):
+        tour_id = instance.tour_ID.split("_")[0]
+        feedback = Feedback.objects.filter(tour_ID=tour_id)
+        rating = 0
+        for i in feedback:
+            rating+=i.ratings
+        if feedback.count() == 0:
+            return 0
+        rating = rating / feedback.count()
+        return rating
+
+    def get_cus_num(self, instance):
+        # Assuming you want to count the number of customers from feedback
+        orders = Order.objects.filter(tour_ID=instance.tour_ID)
+        num = 0
+        for order in orders:
+            num+=order.ticket_num
+        return num
+
 class PlaceTourFeedbackSerializer(serializers.ModelSerializer):
     places = PlaceAndImageSerializer(many=True, read_only=True)
     staff_ID = StaffTokenSerializer(many=False, read_only=True)
