@@ -1,7 +1,9 @@
 import random
 import jwt
 from rest_framework import generics
-from requestTour.models import Request, Tour, Staff, Manager, Place
+from requestTour.models import Request
+from tour.models import Tour, Place
+from staff.models import Staff
 from order_feedback.models import Order
 from requestTour.serializer import *
 from tour.serializer import TourUpdateSerializer, TourViewSerializer, TourSerializer
