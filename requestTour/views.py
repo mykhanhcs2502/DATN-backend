@@ -182,6 +182,8 @@ class RequestGetByIDAPIView(generics.ListAPIView):
             return Response(result, status=status.HTTP_200_OK)
         else:
             result['add_info'] = AddRequestSerializer(AddRequest.objects.get(request_ID=requestlst.request_ID)).data
+            result['add_info']['schedule'] = json.loads(result['add_info']['schedule'])
+            result['add_info']['service'] = json.loads(result['add_info']['service'])
             return Response(result, status=status.HTTP_200_OK)
         
 class RequestCreateAddAPI(generics.CreateAPIView):

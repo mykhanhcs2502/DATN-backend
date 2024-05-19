@@ -267,17 +267,17 @@ class OrderCancelAPIView(generics.UpdateAPIView):
     authentication_classes = []
 
     def post(self, request, *args, **kwargs):
-        auth_header = request.headers.get('Authorization').split(" ")[1]
-        decoded_data = jwt.decode(auth_header, options={"verify_signature": False})
-        tmp = {'type': None, 'id': None, 'email': None}
-        if decoded_data['data'].get('customer_ID'):
-            tmp['type'] = "customer"
-            tmp['id'] = decoded_data['data']['customer_ID']
-            tmp['email'] = decoded_data['data']['email']
-        else:
-            tmp['type'] = "staff"
-            tmp['id'] = decoded_data['data']['staff_ID']
-            tmp['email'] = decoded_data['data']['email']
+        # auth_header = request.headers.get('Authorization').split(" ")[1]
+        # decoded_data = jwt.decode(auth_header, options={"verify_signature": False})
+        # tmp = {'type': None, 'id': None, 'email': None}
+        # if decoded_data['data'].get('customer_ID'):
+        #     tmp['type'] = "customer"
+        #     tmp['id'] = decoded_data['data']['customer_ID']
+        #     tmp['email'] = decoded_data['data']['email']
+        # else:
+        #     tmp['type'] = "staff"
+        #     tmp['id'] = decoded_data['data']['staff_ID']
+        #     tmp['email'] = decoded_data['data']['email']
 
         order_ID = self.request.data.get('order_ID')
         order = Order.objects.get(order_ID=order_ID)
@@ -310,9 +310,9 @@ class OrderCancelAPIView(generics.UpdateAPIView):
                     setattr(order, att, value)
 
             order.save()
-            cancel_tour_mail(tmp['email'], days_until_tour, cancel_percent)
+            cancel_tour_mail(order.email, days_until_tour, cancel_percent)
 
-            return Response({'err': 0, 'email': tmp['email']}, status=status.HTTP_200_OK)
+            return Response({'err': 0, 'email': order.email}, status=status.HTTP_200_OK)
         else:
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)        
         

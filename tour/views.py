@@ -78,6 +78,7 @@ class PlaceAllAPIView(generics.ListAPIView):
         return Response(placelst.data, status=status.HTTP_200_OK)
     
 class PlaceGetAllConditionAPIView(generics.ListAPIView):
+    queryset = Place.objects.all()
     serializer_class = PlaceAndImageSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -230,7 +231,7 @@ class ToursGetAllConditionAPIView(generics.ListAPIView):
     #         return super().get_permissions()
 
 class TourGetByNameAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -315,7 +316,7 @@ class TourAddAllAPIView(generics.CreateAPIView):
             return Response({'message': f'Error creating places: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class TourSearchDeadlinesAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -328,7 +329,7 @@ class TourSearchDeadlinesAPIView(generics.ListAPIView):
         return Response(result, status=status.HTTP_200_OK)
     
 class TourHighestRatingAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourFeedbackSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -345,19 +346,24 @@ class TourHighestRatingAPIView(generics.ListAPIView):
         result_tour = []
         if sorted_tour is not []:
             for i in sorted_tour:
-                tour = Tour.objects.filter(is_cancel=False, tour_ID__icontains=i['tour_ID']).order_by('bookingDeadline').first()
+                tour = Tour.objects.filter(is_cancel=False, 
+                                           tour_ID__icontains=i['tour_ID']
+                                           ).order_by('bookingDeadline').first()
                 if tour == None: 
                     continue
                 tour_list = self.serializer_class(tour)
                 # print(tour_list.data)
-                result_tour.append({'row': tour_list.data, 'average_rating': i['average_rating'], 'order': i['order']})
+                result_tour.append({'row': tour_list.data, 
+                                    'average_rating': i['average_rating'], 
+                                    'order': i['order']
+                                    })
 
         result = {'count': len(result_tour), 'row': result_tour}
 
         return Response(result, status=status.HTTP_200_OK)
 
 class TourSearchByPlaceAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = TourViewSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -366,7 +372,7 @@ class TourSearchByPlaceAPIView(generics.ListAPIView):
         pass
 
 class TourSearchByStaffIDAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -380,7 +386,7 @@ class TourSearchByStaffIDAPIView(generics.ListAPIView):
         return Response(tour_lst.data, status=status.HTTP_200_OK)
 
 class TourSearchByStaffAPIView(generics.ListAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -398,6 +404,7 @@ class TourSearchByStaffAPIView(generics.ListAPIView):
         return Response(tour_lst.data, status=status.HTTP_200_OK)
 
 class TourDetailAPIView(views.APIView):
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -417,7 +424,7 @@ class TourDetailAPIView(views.APIView):
             return Response("Không có tour", status=status.HTTP_200_OK)
     
 class TourCreateAPIView(generics.CreateAPIView):
-    # queryset = Tour.objects.all()
+    queryset = Tour.objects.all()
     serializer_class = TourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -504,27 +511,27 @@ class TourUpdateAPIView(generics.UpdateAPIView):
         if staff_ID != None:
             staff = Staff.objects.get(staff_ID=staff_ID)
 
+        update_tour = Tour.objects.get(pk=tour_ID)
+
         tour_data = {
-            'departure': self.request.data.get('departure') if self.request.data.get('departure') not in ["", None] else None,
-            'vehicle': self.request.data.get('vehicle') if self.request.data.get('vehicle') not in ["", None] else None,
-            'seat_num': self.request.data.get('seat_num') if self.request.data.get('seat_num') not in ["", None] else None,
-            'price': self.request.data.get('price') if self.request.data.get('price') not in ["", None] else None,
-            'isActive': self.request.data.get('isActive') if self.request.data.get('isActive') not in ["", None] else None,
-            'starting_date': datetime.strptime(self.request.data.get('starting_date'), "%Y_%m_%d").date() if self.request.data.get('starting_date') not in ["", None] else None,
-            'bookingDeadline': datetime.strptime(self.request.data.get('bookingDeadline'), "%Y_%m_%d").date() if self.request.data.get('bookingDeadline') not in ["", None] else None,
-            'day_num': self.request.data.get('day_num') if self.request.data.get('day_num') not in ["", None] else None,
-            'night_num': self.request.data.get('night_num') if self.request.data.get('night_num') not in ["", None] else None,
-            'note': self.request.data.get('note') if self.request.data.get('note') not in ["", None] else None,
-            'schedule': json.dumps(self.request.data.get('schedule'), ensure_ascii=False) if self.request.data.get('schedule') not in ["", None] else None,
-            'service': json.dumps(self.request.data.get('service'), ensure_ascii=False) if self.request.data.get('service') not in ["", None] else None,
-            'staff': staff.pk if staff != None else None
+            'departure': self.request.data.get('departure') if self.request.data.get('departure') not in ["", None] else update_tour.departure,
+            'vehicle': self.request.data.get('vehicle') if self.request.data.get('vehicle') not in ["", None] else update_tour.vehicle,
+            'seat_num': self.request.data.get('seat_num') if self.request.data.get('seat_num') not in ["", None] else update_tour.seat_num,
+            'price': self.request.data.get('price') if self.request.data.get('price') not in ["", None] else update_tour.price,
+            'isActive': self.request.data.get('isActive') if self.request.data.get('isActive') not in ["", None] else update_tour.isActive,
+            'starting_date': datetime.strptime(self.request.data.get('starting_date'), "%Y_%m_%d").date() if self.request.data.get('starting_date') not in ["", None] else update_tour.starting_date,
+            'bookingDeadline': datetime.strptime(self.request.data.get('bookingDeadline'), "%Y_%m_%d").date() if self.request.data.get('bookingDeadline') not in ["", None] else update_tour.bookingDeadline,
+            'day_num': self.request.data.get('day_num') if self.request.data.get('day_num') not in ["", None] else update_tour.day_num,
+            'night_num': self.request.data.get('night_num') if self.request.data.get('night_num') not in ["", None] else update_tour.night_num,
+            'note': self.request.data.get('note') if self.request.data.get('note') not in ["", None] else update_tour.note,
+            'schedule': json.dumps(self.request.data.get('schedule'), ensure_ascii=False) if self.request.data.get('schedule') not in ["", None] else update_tour.schedule,
+            'service': json.dumps(self.request.data.get('service'), ensure_ascii=False) if self.request.data.get('service') not in ["", None] else update_tour.service,
+            'staff': staff.pk if staff != None else update_tour.staff
         }
 
-        serializer = self.get_serializer(data=tour_data)
+        serializer = self.serializer_class(data=tour_data)
 
         if serializer.is_valid():
-            update_tour = Tour.objects.get(pk=tour_ID)
-
             for att, value in tour_data.items():
                 if value is not None:
                     setattr(update_tour, att, value)
