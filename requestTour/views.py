@@ -503,8 +503,10 @@ class RequestAcceptAPIView(generics.CreateAPIView):
             #xét condition
             orders = Order.objects.filter(tour_ID=tour.pk)
             for order in orders:
-                if order.is_cancel != True:
-                    return Response({'err': 1, 'msg': "Order of tour not refunded"}, status=status.HTTP_200_OK)
+                order.is_cancel = True
+                order.cancel_percent = 0
+                order.cancel_datetime = datetime.now()
+                order.save()
 
             tour.is_cancel = True
 
