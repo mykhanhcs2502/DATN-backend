@@ -59,7 +59,7 @@ class PlaceAddAllAPIView(generics.CreateAPIView):
                     'description': row['description'],
                     'name': row['name']
                 }
-                print(place_data)
+                
                 serializer = self.get_serializer(data=place_data)
                 serializer.is_valid(raise_exception=True)  # Validate data, raise exception if invalid
                 serializer.save()
@@ -212,7 +212,7 @@ class ToursGetAllConditionAPIView(generics.ListAPIView):
 
         # print(cond)
         cond.append(Q(**{'is_cancel': False}))
-        # cond.append(Q(**{'isActive': False}))
+        cond.append(Q(**{'isActive': True}))
 
         tour_queryset = tour_set.filter(*cond).order_by('starting_date')
         # print(tour_queryset)
@@ -291,6 +291,7 @@ class TourAddAllAPIView(generics.CreateAPIView):
                     'departure': row['departure'],
                     'vehicle': row['vehicle'],
                     'seat_num': row['seatNum'],
+                    'tour_description': row['tour_description'],
                     'price': row['price'],
                     'isActive': False if row['isActive'] == 0 else True,
                     'starting_date': row['starting_date'],
@@ -299,10 +300,10 @@ class TourAddAllAPIView(generics.CreateAPIView):
                     'night_num': row['night_num'],
                     'schedule': schedule_data,
                     'service': service_data,
-                    'note': "No note",
+                    'note': row['note'],
                     'staff': random_staff,
                 }
-                print(tour_data)
+                # print(tour_data)
                 # serializer = self.get_serializer(data=tour_data)
                 # serializer.is_valid(raise_exception=True)  # Validate data, raise exception if invalid
                 # serializer.save()
@@ -335,28 +336,34 @@ class TourHighestRatingAPIView(generics.ListAPIView):
     authentication_classes = []
 
     def post(self, request, *args, **kwargs):
-        list = Feedback.objects.values_list('tour_ID', flat=True).distinct()
-        ratings = []
-        for i in list:
-            filtered_queryset = Feedback.objects.filter(tour_ID=i)
-            average = filtered_queryset.aggregate(value=Avg('ratings'))['value']
-            number = filtered_queryset.count()
-            ratings.append({'tour_ID': i, 'average_rating': average, 'order': number})
-        sorted_tour = sorted(ratings, key=lambda x: x['average_rating'], reverse=True)
+        ratings = (
+            Feedback.objects.values('tour_ID')
+            .annotate(average_rating=Avg('ratings'), order=Count('ratings'))
+            .order_by('-average_rating')
+        )
+
+        sorted_tour = list(ratings)
+        if sorted_tour == []:
+            return Response({'count': 0, 'row': None}, status=status.HTTP_200_OK) 
+
         result_tour = []
-        if sorted_tour is not []:
-            for i in sorted_tour:
-                tour = Tour.objects.filter(is_cancel=False, 
-                                           tour_ID__icontains=i['tour_ID']
-                                           ).order_by('bookingDeadline').first()
-                if tour == None: 
-                    continue
-                tour_list = self.serializer_class(tour)
-                # print(tour_list.data)
-                result_tour.append({'row': tour_list.data, 
-                                    'average_rating': i['average_rating'], 
-                                    'order': i['order']
-                                    })
+        for i in sorted_tour:
+            tour = Tour.objects.filter(
+                is_cancel=False, 
+                isActive=True,
+                tour_ID__icontains=i['tour_ID']
+            ).order_by('bookingDeadline').first()
+            
+            if not tour:
+                continue
+
+            tour_list = self.serializer_class(tour).data
+            
+            result_tour.append({
+                'row': tour_list, 
+                'average_rating': i['average_rating'], 
+                'order': i['order']
+            })
 
         result = {'count': len(result_tour), 'row': result_tour}
 
@@ -405,7 +412,7 @@ class TourSearchByStaffAPIView(generics.ListAPIView):
 
 class TourDetailAPIView(views.APIView):
     queryset = Tour.objects.all()
-    serializer_class = PlaceTourSerializer
+    serializer_class = PlaceTourDetailSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 

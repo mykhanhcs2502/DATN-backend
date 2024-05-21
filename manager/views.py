@@ -55,10 +55,9 @@ class ManagerAddAllAPIView(generics.CreateAPIView):
                 'password': row['password']
             }
             serializer = self.get_serializer(data=manager_data)
-            print (serializer)
+            
             if serializer.is_valid():
                 serializer.save()
-                print("saved")
             else:
                 return Response(serializer.errors, status=status.HTTP_200_OK)
 

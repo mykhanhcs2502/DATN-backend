@@ -29,6 +29,47 @@ class PlaceAndImageSerializer(serializers.ModelSerializer):
         model = Place
         fields = ('place_ID', 'name', 'province', 'images', 'description')
 
+class PlaceTourDetailSerializer(serializers.ModelSerializer):
+    places = PlaceAndImageSerializer(many=True, read_only=True)
+    staff = StaffTokenSerializer(many=False, read_only=True)
+    rating = serializers.SerializerMethodField()
+    cus_num = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tour
+        fields = ('tour_ID', 'name', 'departure', 'vehicle', 'seat_num', 'tour_description','price', 'isActive', 'starting_date', 'bookingDeadline', 'day_num', 'night_num', 'note', 'places', 'schedule', 'service', 'staff', 'rating', 'cus_num')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['schedule'] = json.loads(instance.schedule.replace('\\"', '"'))
+        representation['service'] = json.loads(instance.service.replace('\\"', '"')) 
+        return representation
+    
+    def get_rating(self, instance):
+        orderlst = Order.objects.filter(tour_ID=instance.tour_ID)
+        if orderlst.count() == 0:
+            return 0
+        
+        feedback = Feedback.objects.filter(order_ID__in=orderlst)
+
+        if feedback.count() == 0:
+            return 0
+        
+        rating = 0
+
+        for i in feedback:
+            rating+=i.ratings
+    
+        rating = rating / feedback.count()
+        return rating
+
+    def get_cus_num(self, instance):
+        orders = Order.objects.filter(tour_ID=instance.tour_ID)
+        num = 0
+        for order in orders:
+            num+=order.ticket_num
+        return num
+
 class PlaceTourSerializer(serializers.ModelSerializer):
     places = PlaceAndImageSerializer(many=True, read_only=True)
     staff = StaffTokenSerializer(many=False, read_only=True)
@@ -46,13 +87,20 @@ class PlaceTourSerializer(serializers.ModelSerializer):
         return representation
     
     def get_rating(self, instance):
-        tour_id = instance.tour_ID.split("_")[0]
-        feedback = Feedback.objects.filter(tour_ID=tour_id)
-        rating = 0
-        for i in feedback:
-            rating+=i.ratings
+        orderlst = Order.objects.filter(tour_ID=instance.tour_ID)
+        if orderlst.count() == 0:
+            return 0
+        
+        feedback = Feedback.objects.filter(order_ID__in=orderlst)
+
         if feedback.count() == 0:
             return 0
+        
+        rating = 0
+
+        for i in feedback:
+            rating+=i.ratings
+    
         rating = rating / feedback.count()
         return rating
 
@@ -74,13 +122,20 @@ class TourViewByCondSerializer(serializers.ModelSerializer):
         fields = ('tour_ID', 'name', 'departure', 'vehicle', 'seat_num', 'price', 'isActive', 'starting_date', 'bookingDeadline', 'day_num', 'night_num', 'note', 'places', 'staff', 'rating', 'cus_num')
     
     def get_rating(self, instance):
-        tour_id = instance.tour_ID.split("_")[0]
-        feedback = Feedback.objects.filter(tour_ID=tour_id)
-        rating = 0
-        for i in feedback:
-            rating+=i.ratings
+        orderlst = Order.objects.filter(tour_ID=instance.tour_ID)
+        if orderlst.count() == 0:
+            return 0
+        
+        feedback = Feedback.objects.filter(order_ID__in=orderlst)
+
         if feedback.count() == 0:
             return 0
+        
+        rating = 0
+
+        for i in feedback:
+            rating+=i.ratings
+    
         rating = rating / feedback.count()
         return rating
 
@@ -98,13 +153,13 @@ class PlaceTourFeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('tour_ID', 'name', 'departure', 'vehicle', 'seat_num', 'price', 'isActive', 'starting_date', 'bookingDeadline', 'day_num', 'night_num', 'note', 'places', 'schedule', 'service', 'staff_ID')
+        fields = ('tour_ID', 'name', 'departure', 'vehicle', 'seat_num', 'price', 'isActive', 'starting_date', 'bookingDeadline', 'day_num', 'night_num', 'note', 'places', 'staff_ID')
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['schedule'] = json.loads(instance.schedule.replace('\\"', '"'))
-        representation['service'] = json.loads(instance.service.replace('\\"', '"'))
-        return representation
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     representation['schedule'] = json.loads(instance.schedule.replace('\\"', '"'))
+    #     representation['service'] = json.loads(instance.service.replace('\\"', '"'))
+    #     return representation
 
 class TourViewSerializer(serializers.ModelSerializer):
     places = PlaceAndImageSerializer(many=True, read_only=True)

@@ -63,7 +63,7 @@ class OrderAddAPIView(generics.CreateAPIView):
             'name': name,
             'email': email,
             'phone_no': phone,
-            'note': note,
+            'note': note if note else "No note",
             'ticket_num': ticket_num,
             'tour_ID': Tour.objects.get(tour_ID=tour_ID).pk
         }

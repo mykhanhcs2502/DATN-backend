@@ -23,6 +23,7 @@ class Tour(models.Model):
     departure = models.CharField(max_length=50, null=False)
     vehicle = models.TextField(null=False)
     seat_num = models.IntegerField(default=0)
+    tour_description = models.TextField(null=True)
     price = models.IntegerField(null=False)
     isActive = models.BooleanField(default=False)
     starting_date = models.DateField(null=False)
