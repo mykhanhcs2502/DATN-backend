@@ -43,10 +43,6 @@ class PlaceTourSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['schedule'] = json.loads(instance.schedule.replace('\\"', '"'))
         representation['service'] = json.loads(instance.service.replace('\\"', '"')) 
-        # feedback = Feedback.objects.filter(tour_ID=instance.tour_ID)
-        # rating = feedback.aggregate(value=Avg('ratings'))['value']
-        # representation['rating'] = rating
-        # representation['cus_num'] = True
         return representation
     
     def get_rating(self, instance):
@@ -61,7 +57,6 @@ class PlaceTourSerializer(serializers.ModelSerializer):
         return rating
 
     def get_cus_num(self, instance):
-        # Assuming you want to count the number of customers from feedback
         orders = Order.objects.filter(tour_ID=instance.tour_ID)
         num = 0
         for order in orders:
