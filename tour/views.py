@@ -512,13 +512,17 @@ class TourUpdateAPIView(generics.UpdateAPIView):
 
     def post(self, request, *args, **kwargs):
         tour_ID = self.request.data.get('tour_ID')
-
-        staff_ID = self.request.data.get('staff_ID')
-        staff = None
-        if staff_ID != None:
-            staff = Staff.objects.get(staff_ID=staff_ID)
-
         update_tour = Tour.objects.get(pk=tour_ID)
+
+        staff_ID = self.request.data.get('staff')
+        staff = None
+        if staff_ID:
+            try:
+                staff = Staff.objects.get(pk=staff_ID) 
+            except Staff.DoesNotExist:
+                return Response({'err': 1, 'msg': 'Invalid staff ID'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            staff = update_tour.staff
 
         tour_data = {
             'departure': self.request.data.get('departure') if self.request.data.get('departure') not in ["", None] else update_tour.departure,
@@ -533,17 +537,17 @@ class TourUpdateAPIView(generics.UpdateAPIView):
             'note': self.request.data.get('note') if self.request.data.get('note') not in ["", None] else update_tour.note,
             'schedule': json.dumps(self.request.data.get('schedule'), ensure_ascii=False) if self.request.data.get('schedule') not in ["", None] else update_tour.schedule,
             'service': json.dumps(self.request.data.get('service'), ensure_ascii=False) if self.request.data.get('service') not in ["", None] else update_tour.service,
-            'staff': staff.pk if staff != None else update_tour.staff
+            # 'staff': staff
         }
 
         serializer = self.serializer_class(data=tour_data)
 
         if serializer.is_valid():
             for att, value in tour_data.items():
-                if value is not None:
-                    setattr(update_tour, att, value)
+                setattr(update_tour, att, value)
 
-            update_tour.save()  # Save the modified tour instance
+            update_tour.staff = staff
+            update_tour.save()
 
             return Response({'err': 0}, status=status.HTTP_200_OK)
         else:

@@ -30,7 +30,7 @@ class Tour(models.Model):
     bookingDeadline = models.DateField(null=False)
     day_num = models.IntegerField(null=False)
     night_num = models.IntegerField(null=False)
-    note = models.CharField(max_length=100)
+    note = models.TextField(null=True)
     schedule = models.TextField(default="Tour Schedule", null=False)
     service = models.TextField(default="Tour Service", null=False)
     places = models.ManyToManyField(Place)
