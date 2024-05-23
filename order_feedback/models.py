@@ -11,13 +11,13 @@ from manager.models import Manager
 
 class Order(models.Model):
     order_ID = models.CharField(max_length=20, primary_key=True)
-    pay_method = models.CharField(max_length=20, null=False)
+    pay_method = models.CharField(max_length=50, null=False)
     user_ID = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
     email = models.EmailField(null=False)
-    name = models.CharField(max_length=30, null=False)
+    name = models.CharField(max_length=50, null=False)
     phone_no = models.CharField(max_length=10, null=False)
     date_time = models.DateTimeField(auto_now_add=True)
-    note = models.CharField(max_length=200)
+    note = models.TextField(null=True)
     ticket_num = models.IntegerField(null=False, default=1)
     tour_ID = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     cancel_percent = models.IntegerField(default=0)
@@ -34,8 +34,8 @@ class Feedback(models.Model):
             MaxValueValidator(limit_value=5)
         ]
     )
-    reviews = models.CharField(max_length=200, blank=True)
+    reviews = models.TextField(null=True)
     datetime = models.DateTimeField(auto_now_add=True, editable=False)
     user_ID = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    tour_ID = models.CharField(max_length=20)
+    tour_ID = models.CharField(max_length=100)
     order_ID = models.ForeignKey(Order, on_delete=models.CASCADE)

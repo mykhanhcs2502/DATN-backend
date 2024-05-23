@@ -10,8 +10,8 @@ from rest_framework.authtoken.models import Token
 class Customer(models.Model):
     customer_ID = models.CharField(max_length=20, primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer_user', null=True)
-    username = models.CharField(max_length=20, null=False, unique=True)
-    password = models.CharField(max_length=20, null=False)
+    username = models.CharField(max_length=50, null=False, unique=True)
+    password = models.CharField(max_length=50, null=False)
     phone_no = models.CharField(max_length=10, null=False, unique=True)
     email = models.EmailField(max_length=50, null=False, unique=True)
 

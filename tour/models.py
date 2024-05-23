@@ -18,9 +18,9 @@ class PlaceImages(models.Model):
     place_ID = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images')
 
 class Tour(models.Model):
-    tour_ID = models.CharField(max_length=20, primary_key=True)
+    tour_ID = models.CharField(max_length=100, primary_key=True)
     name = models.TextField(max_length=1000, null=False, default='Default Tour Name')
-    departure = models.CharField(max_length=50, null=False)
+    departure = models.CharField(max_length=100, null=False)
     vehicle = models.TextField(null=False)
     seat_num = models.IntegerField(default=0)
     tour_description = models.TextField(null=True)

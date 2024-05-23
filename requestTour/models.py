@@ -10,10 +10,10 @@ from manager.models import Manager
 #from django_cryptography.fields import encrypt
 
 class Request(models.Model):
-    request_ID = models.CharField(max_length=20, primary_key=True)
+    request_ID = models.CharField(max_length=50, primary_key=True)
     status = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
-    reply = models.CharField(max_length=200)
+    reply = models.TextField(null=True)
     typ = models.CharField(max_length=30, null=False)
     tour_ID = models.ForeignKey(Tour, null=True, on_delete=models.CASCADE)
     staff_ID = models.ForeignKey(Staff, on_delete=models.CASCADE)
@@ -21,13 +21,13 @@ class Request(models.Model):
 
 class EditRequest(models.Model):
     tour_draft = models.TextField(default="No data", null=False)
-    edit_info = models.CharField(max_length=200, null=True)
+    edit_info = models.TextField(null=True)
     request_ID = models.ForeignKey(Request, null=False, on_delete=models.CASCADE)
     
 class AddRequest(models.Model):
     request_ID = models.ForeignKey(Request, null=False, on_delete=models.CASCADE)
     name = models.TextField(max_length=1000, null=False, default='Default Tour Name')
-    departure = models.CharField(max_length=50, null=False)
+    departure = models.CharField(max_length=200, null=False)
     vehicle = models.TextField(null=False)
     seat_num = models.IntegerField(default=0)
     price = models.IntegerField(null=False)
@@ -36,7 +36,7 @@ class AddRequest(models.Model):
     bookingDeadline = models.DateField(null=False)
     day_num = models.IntegerField(null=False)
     night_num = models.IntegerField(null=False)
-    note = models.CharField(max_length=100)
+    note = models.TextField(null=True)
     schedule = models.TextField(default="Tour Schedule", null=False)
     service = models.TextField(default="Tour Service", null=False)
     places = models.ManyToManyField(Place)
