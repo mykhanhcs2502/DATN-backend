@@ -257,18 +257,22 @@ class RequestCreateAddAPI(generics.CreateAPIView):
 
             add_req_serializer = AddRequestSerializer(data=new_add_request)
             if add_req_serializer.is_valid():
-                serializer.save()
-                add_req_serializer.save()
-                result = add_req_serializer.data
-                result['schedule'] = json.loads(result['schedule'])
-                result['service'] = json.loads(result['service'])
-                return Response({'err': 0, 'msg': result}, status=status.HTTP_200_OK)
+                request_instance = serializer.save()
+                new_add_request['request_ID'] = request_instance.pk
+                add_serializer = AddRequestAddAllSerializer(data=new_add_request)
+                if add_serializer.is_valid():
+                    add_serializer.save()
+                # add_req_serializer.save()
+                    result = add_serializer.data
+                    result['schedule'] = json.loads(result['schedule'])
+                    result['service'] = json.loads(result['service'])
+                    return Response({'err': 0, 'msg': result}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'err': 1, 'msg': format_errors(add_serializer.errors)}, status=status.HTTP_400_BAD_REQUEST)
             else: 
                 return Response({'err': 1, 'msg': format_errors(add_req_serializer.errors)}, status=status.HTTP_200_OK)
             
-            # return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            print(serializer.errors)
             return Response({'err': 1, 'msg': format_errors(serializer.errors)}, status=status.HTTP_200_OK)
         
 class RequestCreateEditAPI(generics.CreateAPIView):
@@ -334,27 +338,30 @@ class RequestCreateEditAPI(generics.CreateAPIView):
             if tour_serializer.is_valid():
                 # print(list(self.request.data.get('edit_info', {}).keys()))
                 new_edit_req = {
-                    # 'request_ID': Request.objects.get(request_ID=request_ID).pk,
                     'tour_draft': json.dumps(tour_serializer.data, ensure_ascii=False),
                     'edit_info': json.dumps(list(self.request.data.get('edit_info', {}).keys()), ensure_ascii=False)
                 }
                 edit_serializer =  EditRequestSerializer(data=new_edit_req)
                 if edit_serializer.is_valid():
-                    serializer.save()
-                    edit_serializer.save()
-                    edit_serializer.data['tour_draft'] = json.loads(edit_serializer.data['tour_draft'])
-                    result = {}
-                    result['tour_draft'] = json.loads(edit_serializer.data['tour_draft'])
-                    result['tour_draft']['schedule'] = json.loads(result['tour_draft']['schedule'])
-                    result['tour_draft']['service'] = json.loads(result['tour_draft']['service'])
-                    result['edit_info'] = json.loads(edit_serializer.data['edit_info'])
-                    return Response({'err': 0, 'msg': result}, status=status.HTTP_200_OK)
+                    request_instance = serializer.save()
+                    new_edit_req['request_ID'] = request_instance.pk
+                    add_serializer = EditRequestAddAllSerializer(data=new_edit_req)
+                    if add_serializer.is_valid():
+                        add_serializer.save()
+                        edit_serializer.data['tour_draft'] = json.loads(edit_serializer.data['tour_draft'])
+                        result = {}
+                        result['tour_draft'] = json.loads(edit_serializer.data['tour_draft'])
+                        result['tour_draft']['schedule'] = json.loads(result['tour_draft']['schedule'])
+                        result['tour_draft']['service'] = json.loads(result['tour_draft']['service'])
+                        result['edit_info'] = json.loads(edit_serializer.data['edit_info'])
+                        return Response({'err': 0, 'msg': result}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'err': 1, 'msg': format_errors(add_serializer.errors)}, status=status.HTTP_200_OK)
                 else:
                     return Response({'err': 1, 'msg': format_errors(edit_serializer.errors)}, status=status.HTTP_200_OK)
             else: 
                 return Response({'err': 1, 'msg': format_errors(tour_serializer.errors)}, status=status.HTTP_200_OK)
             
-            # return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'err': 1, 'msg': format_errors(serializer.errors)}, status=status.HTTP_200_OK)
         
@@ -404,9 +411,14 @@ class RequestCreateCancelAPI(generics.CreateAPIView):
 
             cancel_serializer = CancelRequestSerializer(data=new_cancel_req)
             if cancel_serializer.is_valid():
-                serializer.save()
-                cancel_serializer.save()
-                return Response({'err': 0, 'data': cancel_serializer.data}, status=status.HTTP_200_OK)
+                request_instance = serializer.save()
+                new_cancel_req['request_ID'] = request_instance.pk
+                add_serializer = CancelRequestAddAllSerializer(data=new_cancel_req)
+                if add_serializer.is_valid():
+                    add_serializer.save()
+                    return Response({'err': 0, 'msg': add_serializer.data}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'err': 1, 'msg': format_errors(add_serializer.errors)}, status=status.HTTP_200_OK)
             else:
                 return Response({'err': 1, 'msg': format_errors(cancel_serializer.errors)}, status=status.HTTP_200_OK)
         else:

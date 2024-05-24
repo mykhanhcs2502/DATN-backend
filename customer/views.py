@@ -18,6 +18,7 @@ from rest_framework import views
 from rest_framework import permissions
 import pandas as pd
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password, check_password
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from customer.models import Profile
 from customer.helpers import send_forget_password_mail
@@ -50,7 +51,7 @@ class CustomerLoginAPIView(TokenObtainPairView):
         try:
             customer = Customer.objects.get(email=username)
             
-            if password != customer.password:
+            if not check_password(password, customer.password):
                 return Response({'err': 1, 'msg': 'Mật khẩu chưa chính xác !', 'token': None})
             
             # Generate access and refresh tokens
@@ -85,7 +86,8 @@ class CustomerDeleteAllAPIView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         # Delete all Customer instances
         deleted_count, _ = self.get_queryset().delete()
-        deleted_count, _ = User.objects.filter(is_staff=0, is_superuser=0)
+        deleted_count, _ = User.objects.filter(is_staff=0, is_superuser=0).delete()
+        deleted_count, _ = Profile.objects.all().delete()
         return Response({'message': f'{deleted_count} customers deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 class CustomerAddAllAPIView(generics.CreateAPIView):
@@ -102,7 +104,7 @@ class CustomerAddAllAPIView(generics.CreateAPIView):
             customer_data = {
                 'customer_ID': row['user_ID'],
                 'username': row['username'],
-                'password': row['password'],
+                'password': make_password(str(row['password'])),
                 'phone_no': row['phone_no'],
                 'email': row['email']
             }
@@ -110,12 +112,8 @@ class CustomerAddAllAPIView(generics.CreateAPIView):
             serializer = self.get_serializer(data=customer_data)
             
             if serializer.is_valid():
-                customer = serializer.save()
-                # token, created = Token.objects.get_or_create(user=customer.user)
-                # print(f"Token for {customer.customer_ID}")
-                pass
+                serializer.save()
             else:
-                # Handle invalid serializer data here
                 print(serializer.errors)
 
         return Response({'message': 'Customers created successfully'}, status=status.HTTP_201_CREATED)
@@ -127,8 +125,7 @@ class CustomerCreate(generics.CreateAPIView):
     authentication_classes = []
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        msg = 'error'
+        serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
             username = self.request.data.get('username')
@@ -144,7 +141,7 @@ class CustomerCreate(generics.CreateAPIView):
             new_customer = Customer.objects.create(
                 customer_ID = customer_id,
                 username = username,
-                password = request.data['password'],
+                password = make_password(str(request.data['password'])),
                 phone_no = phone_no,
                 email    = email
             )
@@ -152,14 +149,13 @@ class CustomerCreate(generics.CreateAPIView):
             profile_obj = Profile.objects.create(email = email)
             profile_obj.save()
 
-            serializer = self.get_serializer(new_customer)
+            serializer = CustomerTokenSerializer(new_customer)
             response_data = {'err': 0, 'msg': 'success', 'token': serializer.data}
             return Response(response_data, status=status.HTTP_201_CREATED)
                 
             
         else:
             errors = serializer.errors
-            print(errors)
             error = 0
             # tmp = []
             if 'username' in errors:

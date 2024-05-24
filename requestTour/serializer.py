@@ -35,4 +35,4 @@ class CancelRequestAddAllSerializer(serializers.ModelSerializer):
 class CancelRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model=CancelRequest
-        fields=('reason')
+        fields=('reason', )
