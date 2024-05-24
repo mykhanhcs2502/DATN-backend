@@ -136,7 +136,7 @@ class CustomerCreate(generics.CreateAPIView):
             while Customer.objects.filter(customer_ID=f"U_{i}").exists():
                 i += 1
 
-            customer_id = f"U_{i}"
+            customer_id = f"U_{i:03}"
 
             new_customer = Customer.objects.create(
                 customer_ID = customer_id,

@@ -10,7 +10,7 @@ class Manager(models.Model):
     manager_ID = models.CharField(max_length=20, primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='manager_user', null=True)
     email = models.EmailField(null=False, unique=True)
-    password = models.CharField(max_length=50, null=False)
+    password = models.TextField(null=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

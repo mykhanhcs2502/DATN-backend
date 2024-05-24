@@ -17,7 +17,7 @@ class Staff(models.Model):
     gender = models.CharField(max_length=3)
     lastName = models.CharField(max_length=100, null=False)
     firstName = models.CharField(max_length=100, null=False)
-    encryp_pass = models.CharField(max_length=50, default="123456")
+    encryp_pass = models.TextField(default="123456", null=False)
     managerID = models.ManyToManyField(Manager)
     firstLogin = models.BooleanField(default=True, null=False)
 
