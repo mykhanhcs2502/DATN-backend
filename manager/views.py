@@ -13,6 +13,7 @@ import pandas as pd
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from django.contrib.auth.hashers import make_password, check_password
 from unidecode import unidecode
 
 class ManagerDeleteAllAPIView(generics.DestroyAPIView):
@@ -52,9 +53,9 @@ class ManagerAddAllAPIView(generics.CreateAPIView):
             manager_data = {
                 'manager_ID': row['manager_ID'], 
                 'email': row['email'], 
-                'password': row['password']
+                'password': make_password(row['password'])
             }
-            serializer = self.get_serializer(data=manager_data)
+            serializer = self.serializer_class(data=manager_data)
             
             if serializer.is_valid():
                 serializer.save()
@@ -88,7 +89,7 @@ class ManagerLoginAPIView(TokenObtainPairView):
         try:
             manager = Manager.objects.get(email=username)
             
-            if password != manager.password:
+            if not check_password(str(password), manager.password):
                 return Response({'err': 1, 'msg': 'Mật khẩu chưa chính xác !', 'token': None})
             
             # Generate access and refresh tokens
@@ -149,6 +150,7 @@ class StaffAddAPIView(generics.CreateAPIView):
             email = f"{unidecode(firstName.lower())}.{unidecode(lastName)}{j}@kbdulich.vn"
 
         print(email)
+        staff_password = f"{unidecode(firstName.lower())}.{unidecode(lastName)}"
 
         new_staff = {
             'staff_ID': f"S_{i:03}",
@@ -158,7 +160,7 @@ class StaffAddAPIView(generics.CreateAPIView):
             'gender': self.request.data.get('gender'),
             'lastName': self.request.data.get('lastName'),
             'firstName': self.request.data.get('firstName'),
-            'encryp_pass': f"{unidecode(firstName.lower())}.{unidecode(lastName)}",
+            'encryp_pass': make_password(staff_password),
             'managerID': managers
         }
         serializer = self.serializer_class(data=new_staff)

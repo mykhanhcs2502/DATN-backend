@@ -51,7 +51,7 @@ class CustomerLoginAPIView(TokenObtainPairView):
         try:
             customer = Customer.objects.get(email=username)
             
-            if not check_password(password, customer.password):
+            if not check_password(str(password), customer.password):
                 return Response({'err': 1, 'msg': 'Mật khẩu chưa chính xác !', 'token': None})
             
             # Generate access and refresh tokens

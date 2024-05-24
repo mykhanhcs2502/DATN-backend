@@ -14,6 +14,7 @@ from django.conf import settings
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from django.contrib.auth.hashers import make_password, check_password
 
 class StaffTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -39,7 +40,7 @@ class StaffLoginAPIView(TokenObtainPairView):
         try:
             staff = Staff.objects.get(email=username, isActive=True)
             
-            if password != staff.encryp_pass:
+            if not check_password(str(password), staff.encryp_pass):
                 return Response({'err': 1, 'msg': 'Mật khẩu chưa chính xác !', 'token': None})
             
             # Generate access and refresh tokens
@@ -103,7 +104,7 @@ class StaffAddAllAPIView(generics.CreateAPIView):
                 'gender': row['gender'], 
                 'lastName': row['lastName'], 
                 'firstName': row['firstName'], 
-                'encryp_pass': row['encryp_pass'], 
+                'encryp_pass': make_password(str(row['encryp_pass'])), 
                 'managerID': manager_ids
             }
 
@@ -140,7 +141,7 @@ class StaffFirstLoginAPIView(generics.CreateAPIView):
             
             if decoded_data['data']['firstLogin'] is True:
                 new_password = self.request.data.get('password')
-                staff.encryp_pass = new_password
+                staff.encryp_pass = make_password(new_password)
                 staff.firstLogin = False
                 staff.save()
 
