@@ -25,6 +25,7 @@ class ManagerDeleteAllAPIView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         # Delete all Manager instances
         deleted_count, _ = self.get_queryset().delete()
+        deleted_count, _ = User.objects.filter(is_superuser=1).delete()
         return Response({'message': f'{deleted_count} Manager deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 class ManagerAddAllAPIView(generics.CreateAPIView):
@@ -38,7 +39,7 @@ class ManagerAddAllAPIView(generics.CreateAPIView):
         admin_manager = {
             'manager_ID': "M_000", 
             'email': "admin@kbdulich.vn", 
-            'password': "admin"
+            'password': make_password("admin")
         }
 
         serializer = self.get_serializer(data=admin_manager)
