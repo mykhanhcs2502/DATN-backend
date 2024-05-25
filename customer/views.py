@@ -109,10 +109,13 @@ class CustomerAddAllAPIView(generics.CreateAPIView):
                 'email': row['email']
             }
             # print(customer_data)
-            serializer = self.get_serializer(data=customer_data)
+            serializer = self.serializer_class(data=customer_data)
             
             if serializer.is_valid():
                 serializer.save()
+                
+                profile_obj = Profile.objects.create(email = row['email'])
+                profile_obj.save()
             else:
                 print(serializer.errors)
 
