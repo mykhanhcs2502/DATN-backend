@@ -2,7 +2,7 @@ from django.db.models.functions import TruncMonth, TruncQuarter
 import calendar
 from datetime import datetime
 import json
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Sum
 import jwt
 from rest_framework import generics
 from staff.models import Staff
@@ -171,13 +171,19 @@ class ToursGetAllConditionAPIView(generics.ListAPIView):
         tour_set = Tour.objects.all()
         if condition['ticket_num'] != None:
             tour_set = Tour.objects.annotate(
+                # ticket_num=Case(
+                #     When(seat_num__isnull=False, then=F('seat_num') - Count('order')),
+                #     default=Value(None),
+                #     output_field=IntegerField()
+                # )
+                total_ticket_num=Sum('order__ticket_num'), # calculate the sum of occupied ticket_num
                 ticket_num=Case(
-                    When(seat_num__isnull=False, then=F('seat_num') - Count('order')),
+                    When(seat_num__isnull=False, then=F('seat_num') - F('total_ticket_num')), # get the remaining ticket_num
                     default=Value(None),
                     output_field=IntegerField()
                 )
             )
-            # print(tour_queryset[0].ticket_num)
+            # print(tour_set[2].tour_ID, tour_set[2].ticket_num)
 
         cond = []
         for key, value in condition.items():
