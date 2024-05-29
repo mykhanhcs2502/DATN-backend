@@ -577,6 +577,8 @@ class TourCancelAPIView(generics.UpdateAPIView):
             order.save()
 
         tour.is_cancel = True
+        tour.isActive = False
+        tour.save()
 
         return Response({'err': 0, 'msg': "cancel success"}, status=status.HTTP_200_OK)
 
