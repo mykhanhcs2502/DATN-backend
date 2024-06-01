@@ -150,7 +150,8 @@ class StaffAddAPIView(generics.CreateAPIView):
             email = f"{unidecode(firstName.lower())}.{unidecode(lastName)}{j}@kbdulich.vn"
 
         print(email)
-        staff_password = f"{unidecode(firstName.lower())}.{unidecode(lastName)}"
+        # staff_password = f"{unidecode(firstName.lower())}.{unidecode(lastName)}"
+        staff_password = "kbdulich"
 
         new_staff = {
             'staff_ID': f"S_{i:03}",
