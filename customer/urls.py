@@ -13,9 +13,11 @@ urlpatterns = [
     path('customer/change_pass/<token>/', ChangePassword.as_view(), name = 'change_pass'),
     path('customer/add_all/', CustomerAddAllAPIView.as_view(), name='add_customers_api'),
     path('customer/delete_all/', CustomerDeleteAllAPIView.as_view(), name='customer_delete_all'),
+
     path('customer/tour/condition', ToursGetAllConditionAPIView.as_view(), name='tour_get_condition'),
     path('customer/tour/name', TourGetByNameAPIView.as_view(), name='tour_get_name'),
     path('customer/tour/highest_ratings', TourHighestRatingAPIView.as_view(), name='tour_highest_ratings'),
+    
     path('customer/order/get_all', OrderOfCustomerAPIView.as_view(), name='order of customer'),
     path('customer/feedback/add', FeedbackAddAPIView.as_view()),
 

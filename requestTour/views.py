@@ -395,7 +395,6 @@ class RequestCreateCancelAPI(generics.CreateAPIView):
         new_request = {
             'request_ID': request_ID,
             'status': 0,
-            # 'date': date,
             'reply': "Chưa có",
             'typ': "cancel",
             'tour_ID': tour_ID,
@@ -406,7 +405,7 @@ class RequestCreateCancelAPI(generics.CreateAPIView):
         serializer = RequestSerializer(data=new_request)
         if serializer.is_valid():
             new_cancel_req = {
-                'cancel': self.request.data.get('reason')
+                'reason': self.request.data.get('reason')
             }
 
             cancel_serializer = CancelRequestSerializer(data=new_cancel_req)

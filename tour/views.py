@@ -1,6 +1,6 @@
 from django.db.models.functions import TruncMonth, TruncQuarter
 import calendar
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from django.db.models import Q, Avg, Sum
 import jwt
@@ -394,7 +394,7 @@ class TourSearchByStaffIDAPIView(generics.ListAPIView):
         staff_ID = self.request.data.get('staff_ID')
         staff = Staff.objects.get(staff_ID=staff_ID)
 
-        tour = Tour.objects.filter(staff=staff.pk, is_cancel=False)
+        tour = Tour.objects.filter(staff=staff.pk)
         tour_lst = self.serializer_class(tour, many=True)
         return Response(tour_lst.data, status=status.HTTP_200_OK)
 
@@ -559,7 +559,21 @@ class TourUpdateAPIView(generics.UpdateAPIView):
         else:
             return Response({'err': 1, 'msg': serializer.errors}, status=status.HTTP_200_OK)
 
+class TourUpdateActiveAPIView(generics.UpdateAPIView):
+    queryset = Tour.objects.all()
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        tourlst = self.queryset
+        for tour in tourlst:
+            if tour.starting_date + timedelta(days=tour.day_num) <= datetime.now().date():
+                tour.isActive = False
+                tour.save()
+        return Response({'msg': "Tour updated"}, status=status.HTTP_200_OK)
+
 class TourCancelAPIView(generics.UpdateAPIView):
+    queryset = Tour.objects.all()
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
@@ -584,6 +598,7 @@ class TourCancelAPIView(generics.UpdateAPIView):
 
 
 class ReportTourCountAPIView(views.APIView):
+    queryset = Tour.objects.all()
     serializer_class = PlaceTourSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []

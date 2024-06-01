@@ -400,13 +400,14 @@ class FeedbackAddAPIView(generics.CreateAPIView):
             i+=1
 
         feedback_ID = f"F_{i:03}"
+        tour_ID = self.request.data.get('tour_ID').split("_")[0]
         feedback_data = {
                 'feedback_ID': feedback_ID,
                 'ratings': self.request.data.get('ratings'),
                 'reviews': self.request.data.get('reviews'),
                 # 'datetime': row['datetime'],
                 'user_ID': customer.pk,
-                'tour_ID': Tour.objects.get(tour_ID=self.request.data.get('tour_ID')).pk,
+                'tour_ID': tour_ID,
                 'order_ID': Order.objects.get(order_ID=self.request.data.get('order_ID')).pk,
         }
 

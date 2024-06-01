@@ -146,7 +146,6 @@ class StaffAddAPIView(generics.CreateAPIView):
             j = 1
             while Staff.objects.filter(email=f"{unidecode(firstName.lower())}.{unidecode(lastName)}{j}@kbdulich.vn").exists():
                 j+=1
-            print(j)
 
             email = f"{unidecode(firstName.lower())}.{unidecode(lastName)}{j}@kbdulich.vn"
 
