@@ -75,7 +75,7 @@ class RequestAddAllAPI(generics.CreateAPIView):
                 if row['type'] != "add":
                     serializer.save()
 
-                elif row['type'] == "edit":
+                if row['type'] == "edit":
                     tour_draft = TourUpdateSerializer(Tour.objects.get(tour_ID=tourID.pk))
                     edit_data = {
                         'request_ID': Request.objects.get(request_ID=row['request_ID']).pk,
