@@ -43,9 +43,7 @@ class StaffLoginAPIView(TokenObtainPairView):
             if not check_password(str(password), staff.encryp_pass):
                 return Response({'err': 1, 'msg': 'Mật khẩu chưa chính xác !', 'token': None})
             
-            # Generate access and refresh tokens
             tokens = self.get_tokens_for_user(User.objects.get(username=username, is_staff=1, is_superuser=0))
-            print(tokens['access_token'])
             
             return Response({'err': 0, 'token': tokens['access_token'], 'refresh_token': tokens['refresh_token'], 'msg': 'Đăng nhập thành công !'}, status=status.HTTP_200_OK)
         

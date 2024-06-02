@@ -9,3 +9,5 @@ def update_tour_active():
         if timezone.now().date() > date_check:
             tour.isActive = False
             # tour.save()
+
+    print("All tour has been checked")

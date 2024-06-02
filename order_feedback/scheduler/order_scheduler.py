@@ -19,5 +19,4 @@ def start_scheduler():
     scheduler.start()
     logger.info("Scheduler started")
 
-# Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())

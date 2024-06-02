@@ -21,18 +21,15 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-load_dotenv(os.path.join(BASE_DIR/".eVar", ".env"))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-9yli$wthxv8!6scyq7a^qq7wse$-u06t&7^n2eqr(7w!s0xj+1"
-# REFRESH_SECRET_KEY = "django-insecure-M6VWhtGPTjR3etmueHVjSxUowQE1FipdJGjY6S6CgajrZLhUaU"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -145,12 +142,12 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "NAME": 'TourManagement',
-    #     "USER": 'root',
-    #     "PASSWORD": 'root',
-    # }
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": 'TourManagement',
+        "USER": 'root',
+        "PASSWORD": 'root',
+    }
 
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
@@ -161,10 +158,10 @@ DATABASES = {
     #     'PORT': '3306',            # Default MySQL port
     # }
 
-    'default': dj_database_url.config(
-        default='mysql://admin:12345678@tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com/tourmanagement',
-        conn_max_age=600,  # Set the maximum age for database connections
-    )
+    # 'default': dj_database_url.config(
+    #     default='mysql://admin:12345678@tourmanagement.cnag6ey8imwm.ap-southeast-2.rds.amazonaws.com/tourmanagement',
+    #     conn_max_age=600,  # Set the maximum age for database connections
+    # )
 }
 
 
