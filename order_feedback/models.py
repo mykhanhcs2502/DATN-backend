@@ -24,6 +24,7 @@ class Order(models.Model):
     cancel_datetime = models.DateTimeField(null=True)
     is_cancel = models.BooleanField(default=False)
     is_refund = models.BooleanField(default=False)
+    is_complete = models.BooleanField(default=True)
 
 class Feedback(models.Model):
     feedback_ID = models.CharField(max_length=20, primary_key=True)

@@ -11,7 +11,7 @@ class OrderAddSerializer(serializers.ModelSerializer):
 class OrderUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Order
-        fields=('email', 'name', 'phone_no', 'note')
+        fields=('email', 'name', 'phone_no', 'note', 'is_refund', 'is_complete')
 
 class OrderCancelSerializer(serializers.ModelSerializer):
     class Meta:

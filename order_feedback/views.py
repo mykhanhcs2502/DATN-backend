@@ -55,18 +55,32 @@ class OrderAddAPIView(generics.CreateAPIView):
         while Order.objects.filter(order_ID=f"O_{i:03}").exists():
             i += 1
 
-        print(tour_ID)
-        new_order = {
-            'order_ID': f"O_{i:03}",
-            'pay_method': pay_method,
-            'user_ID': user_ID,
-            'name': name,
-            'email': email,
-            'phone_no': phone,
-            'note': note if note else "No note",
-            'ticket_num': ticket_num,
-            'tour_ID': Tour.objects.get(tour_ID=tour_ID).pk
-        }
+        new_order = None
+        if pay_method == "cash":
+            new_order = {
+                'order_ID': f"O_{i:03}",
+                'pay_method': pay_method,
+                'user_ID': user_ID,
+                'name': name,
+                'email': email,
+                'phone_no': phone,
+                'note': note if note else "No note",
+                'ticket_num': ticket_num,
+                'tour_ID': Tour.objects.get(tour_ID=tour_ID).pk,
+                'is_complete': False
+            }
+        else:
+            new_order = {
+                'order_ID': f"O_{i:03}",
+                'pay_method': pay_method,
+                'user_ID': user_ID,
+                'name': name,
+                'email': email,
+                'phone_no': phone,
+                'note': note if note else "No note",
+                'ticket_num': ticket_num,
+                'tour_ID': Tour.objects.get(tour_ID=tour_ID).pk
+            }
 
         serializer = self.serializer_class(data=new_order)
         if serializer.is_valid():
@@ -242,7 +256,8 @@ class OrderUpdateAPIView(generics.UpdateAPIView):
             'name': self.request.data.get('name') if self.request.data.get('name') not in ["", None] else None,
             'phone_no': self.request.data.get('phone_no') if self.request.data.get('phone_no') not in ["", None] else None,
             'note': self.request.data.get('note') if self.request.data.get('note') not in ["", None] else None,
-            'is_refund': self.request.data.get('is_refund') if self.request.data.get('is_refund') not in ["", None] else None
+            'is_refund': self.request.data.get('is_refund') if self.request.data.get('is_refund') not in ["", None] else None,
+            'is_complete': self.request.data.get('is_complete') if self.request.data.get('is_complete') not in ["", None] else None
         }
 
         serializer = self.serializer_class(data=update_attribute)
