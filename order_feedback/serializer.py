@@ -16,7 +16,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 class OrderCancelSerializer(serializers.ModelSerializer):
     class Meta:
         model=Order
-        fields=('is_cancel', 'cancel_datetime', 'cancel_percent')
+        fields=('is_cancel', 'cancel_datetime', 'cancel_percent', 'cancel_reason')
 
 class OrderOfTourSerializer(serializers.ModelSerializer):
     class Meta:

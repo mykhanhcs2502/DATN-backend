@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -21,29 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 load_dotenv(os.path.join(BASE_DIR/".eVar", ".env"))
-
-from datetime import timedelta
-import logging
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        # Configure console handler to output to the console
-        'console': {
-            'level': 'DEBUG',  # Set the logging level to include INFO messages
-            'class': 'logging.StreamHandler',  # Use StreamHandler to output to console
-        },
-    },
-    'loggers': {
-        # Configure the root logger to use the console handler
-        '': {
-            'handlers': ['console'],  # Specify the console handler for the root logger
-            'level': 'DEBUG',  # Set the logging level to include INFO messages
-            'propagate': True,
-        },
-    },
-}
 
 
 # Quick-start development settings - unsuitable for production
@@ -71,7 +49,7 @@ INSTALLED_APPS = [
     'manager.apps.ManagerConfig',
     'staff.apps.StaffConfig',
     'tour.apps.TourConfig',
-    'order_feedback.apps.Order_feedbackConfig',
+    'order_feedback.apps.OrderFeedbackConfig',
     'requestTour.apps.RequestTourConfig',
     'rest_framework',
     # 'django_filters',
@@ -221,16 +199,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'django-db'
-# CELERY_BEAT_SCHEDULE = {
-#     'update_tours_status_every_24_hours': {
-#         'task': 'tour.tasks.update_tours_status',
-#         'schedule': 8.0,  # 24 hours in seconds
-#     },
-# }
-# CELERY_TIMEZONE = 'UTC'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

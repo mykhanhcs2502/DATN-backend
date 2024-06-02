@@ -30,15 +30,16 @@ class OrderAddAPIView(generics.CreateAPIView):
         if not auth_header:
             user_ID = None
 
-        try:
-            token = auth_header.split(" ")[1]
-            decoded_data = jwt.decode(token, options={"verify_signature": False})
-            customer_ID = decoded_data['data'].get('customer_ID')
-            if customer_ID is not None:
-                email = decoded_data['data']['email']
-                user_ID = Customer.objects.get(email=email).pk
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, Customer.DoesNotExist, KeyError):
-            user_ID = None
+        else:
+            try:
+                token = auth_header.split(" ")[1]
+                decoded_data = jwt.decode(token, options={"verify_signature": False})
+                customer_ID = decoded_data['data'].get('customer_ID')
+                if customer_ID is not None:
+                    email = decoded_data['data']['email']
+                    user_ID = Customer.objects.get(email=email).pk
+            except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, Customer.DoesNotExist, KeyError):
+                user_ID = None
 
         pay_method = self.request.data.get('pay_method')
         email = self.request.data.get('email')
@@ -314,7 +315,8 @@ class OrderCancelAPIView(generics.UpdateAPIView):
         update_attribute = {
             'is_cancel': True,
             'cancel_datetime': cancel_date,
-            'cancel_percent': cancel_percent
+            'cancel_percent': cancel_percent,
+            'cancel_reason': self.request.data.get('cancel_reason')
         }
 
         serializer = self.serializer_class(data=update_attribute)

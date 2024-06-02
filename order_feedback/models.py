@@ -22,6 +22,7 @@ class Order(models.Model):
     tour_ID = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     cancel_percent = models.IntegerField(default=0)
     cancel_datetime = models.DateTimeField(null=True)
+    cancel_reason = models.TextField(null=True)
     is_cancel = models.BooleanField(default=False)
     is_refund = models.BooleanField(default=False)
     is_complete = models.BooleanField(default=True)

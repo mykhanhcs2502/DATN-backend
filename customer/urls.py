@@ -10,7 +10,7 @@ urlpatterns = [
     path('customer/add/', CustomerCreate.as_view(), name='create_customer'),
     path('customer/login', CustomerLoginAPIView.as_view(), name='get_customer'),
     path('customer/forget_pass/', ForgetPassword.as_view(), name = 'forget_pass'),
-    path('customer/change_pass/<token>/', ChangePassword.as_view(), name = 'change_pass'),
+    path('customer/change_pass/', ChangePassword.as_view(), name = 'change_pass'),
     path('customer/add_all/', CustomerAddAllAPIView.as_view(), name='add_customers_api'),
     path('customer/delete_all/', CustomerDeleteAllAPIView.as_view(), name='customer_delete_all'),
 
