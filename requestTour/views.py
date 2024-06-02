@@ -1,7 +1,7 @@
 import random
 import jwt
 from rest_framework import generics
-from requestTour.models import Request
+from requestTour.models import Request, EditRequest, AddRequest, CancelRequest
 from tour.models import Tour, Place
 from staff.models import Staff
 from order_feedback.models import Order
@@ -15,6 +15,73 @@ import json
 import pandas as pd
 from datetime import datetime
 
+def check_duplicate(data, typ, tour_ID, request_ID):
+    if typ == "edit":
+        requests_with_edits = Request.objects.filter(
+                            typ="edit"
+                        ).select_related(
+                            'tour_ID', 'staff_ID'
+                        ).prefetch_related(
+                            'manager_ID', 'editrequest_set'
+                        )
+        request_same_tour = requests_with_edits.filter(tour_ID=tour_ID)
+        if request_same_tour.count() == 0:
+            return None
+        
+        duplicate_request = []
+        for request in request_same_tour:
+            edit_request = request.editrequest_set.all()[0]
+            serializer = EditRequestSerializer(edit_request)
+            if serializer.data == data and request.request_ID != request_ID:
+                duplicate_request.append(request.request_ID)
+        
+        if duplicate_request == []:
+            return None
+        
+        return duplicate_request
+    
+    elif typ == "add":
+        requests_with_adds = Request.objects.filter(
+                            typ="add"
+                        ).select_related(
+                            'tour_ID', 'staff_ID'
+                        ).prefetch_related(
+                            'manager_ID', 'addrequest_set'
+                        )
+        
+        duplicate_request = []
+        for request in requests_with_adds:
+            add_request = request.addrequest_set.all()[0]
+            serializer = AddRequestSerializer(add_request)
+            if serializer.data == data and request.request_ID != request_ID:
+                duplicate_request.append(request.request_ID)
+        
+        if duplicate_request == []:
+            return None
+        
+        return duplicate_request
+    
+    else:
+        requests_with_cancels = Request.objects.filter(
+                            typ="cancel"
+                        ).select_related(
+                            'tour_ID', 'staff_ID'
+                        ).prefetch_related(
+                            'manager_ID', 'is_duplicate', 'addrequest_set'
+                        ).filter(tour_ID=tour_ID)
+        
+        duplicate_request = []
+        for request in requests_with_cancels:
+            cancel_request = request.cancelrequest_set.all()[0]
+            serializer = CancelRequestSerializer(cancel_request)
+            if serializer.data == data and request.request_ID != request_ID:
+                duplicate_request.append(request.request_ID)
+        
+        if duplicate_request == []:
+            return None
+        
+        return duplicate_request
+
 def format_errors(errors):
     error_messages = {}
     for field, messages in errors.items():
@@ -23,9 +90,6 @@ def format_errors(errors):
 
 class RequestDeleteAllAPIView(generics.DestroyAPIView):
     queryset = Request.objects.all()
-    # queryset1 = AddRequest.objects.all()
-    # queryset2 = EditRequest.objects.all()
-    # queryset3 = CancelRequest.objects.all()
     serializer_class = RequestSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -165,6 +229,9 @@ class RequestGetByIDAPIView(generics.ListAPIView):
         if request.data['typ'] == "edit":
             edit_req = EditRequest.objects.get(request_ID=request_ID)
             edit_serializer = EditRequestSerializer(edit_req)
+            
+            duplicates = check_duplicate(edit_serializer.data, "edit", requestlst.tour_ID, request_ID)
+            
             tour_draft_data = json.loads(edit_req.tour_draft)
             tour_draft_serializer = TourUpdateSerializer(data=tour_draft_data)
             if tour_draft_serializer.is_valid():
@@ -179,19 +246,28 @@ class RequestGetByIDAPIView(generics.ListAPIView):
                 result['tour_info'] = tour_info
 
                 result['edit_fields'] = json.loads(edit_serializer.data['edit_info'].replace('\\"', '"'))
+                result['duplicates'] = duplicates
                 return Response(result, status=status.HTTP_200_OK)
             else:
                 return Response(format_errors(tour_draft_serializer.errors), status=status.HTTP_200_OK)
         elif request.data['typ'] == "cancel":
             result['tour_info'] = TourViewSerializer(Tour.objects.get(tour_ID=requestlst.tour_ID.pk)).data
             cancel_req = CancelRequest.objects.get(request_ID=request_ID)
-            # cancel_serializer = CancelRequestSerializer(cancel_req)
+            
+            cancel_serializer = CancelRequestSerializer(cancel_req)
+            duplicates = check_duplicate(cancel_serializer.data, "cancel", requestlst.tour_ID, request_ID)
+
             result['reason'] = cancel_req.reason
+            result['duplicates'] = duplicates
             return Response(result, status=status.HTTP_200_OK)
         else:
             result['add_info'] = AddRequestSerializer(AddRequest.objects.get(request_ID=requestlst.request_ID)).data
+
+            duplicates = check_duplicate(result['add_info'], "add", None, request_ID)
+
             result['add_info']['schedule'] = json.loads(result['add_info']['schedule'])
             result['add_info']['service'] = json.loads(result['add_info']['service'])
+            result['duplicates'] = duplicates
             return Response(result, status=status.HTTP_200_OK)
         
 class RequestCreateAddAPI(generics.CreateAPIView):
