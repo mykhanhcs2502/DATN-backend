@@ -1,11 +1,10 @@
 from django.apps import AppConfig
-from django.core.management import call_command
 
 class OrderFeedbackConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
     name = 'order_feedback'
 
     def ready(self):
-        print('Running ready method in OrderFeedbackConfig...')
+        from order_feedback.scheduler.order_scheduler import start_scheduler
+        start_scheduler()
         
-        # Call the management command to delete old orders
-        call_command('delete_old_orders')

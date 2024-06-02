@@ -2,11 +2,9 @@ from django.apps import AppConfig
 from django.core.management import call_command
 
 class TourConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
     name = "tour"
-    labels = "my.tour"
 
     def ready(self):
-        print('Running ready method in OrderFeedbackConfig...')
-        
-        # Call the management command to delete old orders
-        call_command('update_tour_status')
+        from tour.scheduler.tour_scheduler import start_scheduler
+        start_scheduler()    

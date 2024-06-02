@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     'order_feedback.apps.OrderFeedbackConfig',
     'requestTour.apps.RequestTourConfig',
     'rest_framework',
-    # 'django_filters',
-    # 'rest_framework.authtoken',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'django_apscheduler'

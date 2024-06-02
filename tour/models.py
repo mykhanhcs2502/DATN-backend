@@ -5,7 +5,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from staff.models import Staff
-#from django_cryptography.fields import encrypt
 
 class Place(models.Model):
     place_ID = models.CharField(max_length=20, primary_key=True)

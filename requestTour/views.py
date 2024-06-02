@@ -42,12 +42,12 @@ def check_duplicate(data, typ, tour_ID, request_ID):
     
     elif typ == "add":
         requests_with_adds = Request.objects.filter(
-                            typ="add"
-                        ).select_related(
-                            'tour_ID', 'staff_ID'
-                        ).prefetch_related(
-                            'manager_ID', 'addrequest_set'
-                        )
+                                typ="add"
+                            ).select_related(
+                                'tour_ID', 'staff_ID'
+                            ).prefetch_related(
+                                'manager_ID', 'addrequest_set'
+                            )
         
         duplicate_request = []
         for request in requests_with_adds:
@@ -63,12 +63,12 @@ def check_duplicate(data, typ, tour_ID, request_ID):
     
     else:
         requests_with_cancels = Request.objects.filter(
-                            typ="cancel"
-                        ).select_related(
-                            'tour_ID', 'staff_ID'
-                        ).prefetch_related(
-                            'manager_ID', 'is_duplicate', 'addrequest_set'
-                        ).filter(tour_ID=tour_ID)
+                                    typ="cancel"
+                                ).select_related(
+                                    'tour_ID', 'staff_ID'
+                                ).prefetch_related(
+                                    'manager_ID', 'is_duplicate', 'addrequest_set'
+                                ).filter(tour_ID=tour_ID)
         
         duplicate_request = []
         for request in requests_with_cancels:
