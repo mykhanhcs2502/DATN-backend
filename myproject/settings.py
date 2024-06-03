@@ -116,6 +116,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    'https://kbdulich.vercel.app/',
+]
 
 ROOT_URLCONF = "myproject.urls"
 
